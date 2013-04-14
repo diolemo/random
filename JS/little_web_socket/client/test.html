@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Test</title>
+	</head>
+	<body>
+		<b>Little Web Socket Client Test</b>
+		<div id="console"></div>
+		<script>
+		
+		// this is so we can debug in really old browsers
+		// that don't support console logging
+		
+		var console = new Object();
+		console.log = function(m) {
+			var console = document.getElementById('console');
+			console.appendChild(document.createElement('br'));
+			console.appendChild(document.createTextNode(m));
+		};
+		
+		</script>
+		<script src="swfobject.min.js"></script>
+		<script> var LWSC_SWF_URL = 'little_web_socket_client.swf'; </script>
+		<script src="little_web_socket_client.js"></script>
+		<script>
+		
+		lwsc_on_load(function() {
+			
+			var sock = new LittleWebSocketClient();
+			
+			sock.on('connect', function() {
+				console.log('connected');
+			});
+			
+			sock.on('data', function(data) {
+				console.log('recv: ' + data);
+			});
+			
+			sock.on('error', function(error) {
+				console.log('error: ' + error);
+			});
+			
+			sock.on('close', function() {
+				console.log('closed');
+			});
+			
+			sock.connect('red.staite.net', '1337');
+			
+			// test message every second
+			setInterval(function() {
+				console.log('sent: ' + (+new Date()));
+				sock.write(+new Date());
+			}, 1000);
+						
+		});
+		
+		</script>
+	</body>
+</html>
